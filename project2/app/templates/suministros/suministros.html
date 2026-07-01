@@ -1,0 +1,58 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block title %}Suministros{% endblock %}
+
+{% block header_title %}SUMINISTROS{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/proveedores.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container menu">
+    <div class="menu-layout">
+                    <a href="{% url 'inventario' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/inventario.png' %}" alt="Módulo Inventario">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-warehouse"></i></div>
+                    <div class="menu-card-content">
+                        <h3>EXISTENCIAS</h3>
+                        <p class="muted">Productos, Insumos y Categorias</p>
+                    </div>
+                </article>
+            </a>
+                        <a href="{% url 'proveedores_list' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/proveedores.png' %}" alt="Módulo Proveedores">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-truck-field"></i></div>
+                    <div class="menu-card-content">
+                        <h3>PROVEEDORES</h3>
+                        <p class="muted">Contactos & pagos</p>
+                    </div>
+                </article>
+            </a>
+            <a href="{% url 'bom_list' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/bom.png' %}" alt="Módulo BOM">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="menu-card-content">
+                        <h3>GESTION DE ENSAMBLAJE</h3>
+                        <p class="muted">Estructura de productos</p>
+                    </div>
+                </article>
+            </a>
+           
+                
+    </div>
+</main>
+{% endblock %}

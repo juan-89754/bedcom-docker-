@@ -1,0 +1,196 @@
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
+from .views import calendario, insumos, menu, proveedores, productos, reportes, categorias, respaldos, salida_p, bom, inventario, logistica, entrada_p, gestion, suministros, notificaciones, pedido, clientes, despacho
+from app.views.respaldos.views import modal_respaldos
+from app.views.despacho.views import (
+    DespachoListView,
+    DespachoCreateView,
+    DespachoUpdateEstadoView,
+    DespachoDetailView,
+    DespachosPorFechaView
+)
+from app.views.mantenimientos.views import (
+    MantenimientoListView,
+    MantenimientoCreateView,
+    MantenimientoUpdateEstadoView,
+    MantenimientoDetailView,
+)
+
+urlpatterns = [
+    # ALIAS PATHS for notificaciones APIs (to fix frontend 404s to wrong paths)
+    path('notificaciones/api/kpis/', notificaciones.api_kpis_notificaciones, name='api_kpis_alias'),
+
+
+    # --- ENTRADA DE PRODUCTOS ---
+    path('entrada_p/', entrada_p.EntradaListView.as_view(), name='entrada_p'),
+    path('entrada_p/data/', entrada_p.EntradaDataView.as_view(), name='entrada_p_data'),
+    path('entrada_p/obtener/<int:pk>/', entrada_p.EntradaDetailView.as_view(), name='entrada_p_obtener'),
+    path('entrada_p/crear/', entrada_p.EntradaCreateView.as_view(), name='entrada_p_crear'),
+    path('entrada_p/editar/<int:pk>/', entrada_p.EntradaUpdateView.as_view(), name='entrada_p_editar'),
+    path('entrada_p/eliminar/<int:pk>/', entrada_p.EntradaDeleteView.as_view(), name='entrada_p_eliminar'),
+    path('entrada_p/reactivar/<int:pk>/', entrada_p.EntradaReactivarView.as_view(), name='entrada_p_reactivar'),
+
+    # --- MENÚ / DASHBOARD ---
+    path('menu/', menu.MenuView.as_view(), name='menu'),
+    path('menu/perfil/', menu.get_perfil, name='get_perfil'),
+    path('menu/perfil/actualizar/', menu.update_perfil, name='update_perfil'),
+
+    # --- PRODUCTOS ---
+    path('productos/', productos.producto_list_view.as_view(), name='productos'),
+    path('productos/crear/', productos.producto_create_view.as_view(), name='crear_producto'),
+    path('productos/editar/<int:pk>/', productos.producto_update_view.as_view(), name='editar_producto'),
+    path('productos/eliminar/<int:pk>/', productos.producto_delete_view.as_view(), name='eliminar_producto'),
+    path('productos/activar/<int:pk>/', productos.producto_activate_view.as_view(), name='activar_producto'),
+
+    # --- CATEGORÍAS ---
+    path('categorias/', categorias.categoria_list_view.as_view(), name='categorias'),
+    path('categorias/crear/', categorias.categoria_create_view.as_view(), name='crear_categoria'),
+    path('categorias/editar/<int:pk>/', categorias.categoria_update_view.as_view(), name='editar_categoria'),
+    path('categorias/eliminar/<int:pk>/', categorias.categoria_delete_view.as_view(), name='eliminar_categoria'),
+    path('categorias/activar/<int:pk>/', categorias.categoria_activate_view.as_view(), name='activar_categoria'),
+
+    # --- REPORTES ---
+    path('reportes/', reportes.ReporteVentasView.as_view(), name='reportes'),
+    path('reportes/estadisticas/pdf/', reportes.ExportarEstadisticasPDF.as_view(), name='estadisticas_pdf'),
+    path('reportes/estadisticas/excel/', reportes.ExportarEstadisticasExcel.as_view(), name='estadisticas_excel'),
+    path('reportes/categorias/pdf/', reportes.ExportarCategoriasPDF.as_view(), name='categorias_pdf'),
+    path('reportes/categorias/excel/', reportes.ExportarCategoriasExcel.as_view(), name='categorias_excel'),
+    path('reportes/insumos/pdf/', reportes.ExportarInsumosPDF.as_view(), name='insumos_pdf'),
+    path('reportes/insumos/excel/', reportes.ExportarInsumosExcel.as_view(), name='insumos_excel'),
+    path('reportes/productos/pdf/', reportes.ExportarProductosPDF.as_view(), name='productos_pdf'),
+    path('reportes/productos/excel/', reportes.ExportarProductosExcel.as_view(), name='productos_excel'),
+    path('reportes/proveedores/pdf/', reportes.ExportarProveedoresPDF.as_view(), name='proveedores_pdf'),
+    path('reportes/proveedores/excel/', reportes.ExportarProveedoresExcel.as_view(), name='proveedores_excel'),
+    path('reportes/bom/pdf/', reportes.ExportarBOMPDF.as_view(), name='bom_pdf'),
+    path('reportes/bom/excel/', reportes.ExportarBOMExcel.as_view(), name='bom_excel'),
+    path('reportes/inventario/pdf/', reportes.ExportarInventarioPDF.as_view(), name='inventario_pdf'),
+    path('reportes/inventario/excel/', reportes.ExportarInventarioExcel.as_view(), name='inventario_excel'),
+    path('reportes/clientes/pdf/', reportes.ExportarClientesPDF.as_view(), name='clientes_pdf'),
+    path('reportes/clientes/excel/', reportes.ExportarClientesExcel.as_view(), name='clientes_excel'),
+    path('reportes/pedidos/pdf/', reportes.ExportarPedidosPDF.as_view(), name='pedidos_pdf'),
+    path('reportes/pedidos/excel/', reportes.ExportarPedidosExcel.as_view(), name='pedidos_excel'),
+    path('reportes/entradas/pdf/', reportes.ExportarEntradasPDF.as_view(), name='entradas_pdf'),
+    path('reportes/entradas/excel/', reportes.ExportarEntradasExcel.as_view(), name='entradas_excel'),
+    path('reportes/salidas/pdf/', reportes.ExportarSalidasPDF.as_view(), name='salidas_pdf'),
+    path('reportes/salidas/excel/', reportes.ExportarSalidasExcel.as_view(), name='salidas_excel'),
+
+    # --- INSUMOS ---
+    path('insumos/', insumos.InsumoListView.as_view(), name='insumos'),
+    path('insumos/data/', insumos.InsumoDataView.as_view(), name='insumos_data'),
+    path('insumos/obtener/<int:pk>/', insumos.InsumoDetailView.as_view(), name='obtener_insumo'),
+    path('insumos/crear/', insumos.InsumoCreateView.as_view(), name='crear_insumo'),
+    path('insumos/editar/<int:pk>/', insumos.InsumoUpdateView.as_view(), name='editar_insumo'),
+    path('insumos/inactivar/<int:pk>/', insumos.InsumoInactivarView.as_view(), name='inactivar_insumo'),
+    path('insumos/activar/<int:pk>/', insumos.InsumoActivarView.as_view(), name='activar_insumo'),
+    path('insumos/crear_categoria/', insumos.CategoriaCreateView.as_view(), name='insumo_crear_categoria'),
+    path('insumos/crear_proveedor/', insumos.ProveedorCreateView.as_view(), name='insumo_crear_proveedor'),
+
+    # --- CALENDARIO ---
+    path('calendario/', calendario.CalendarioView.as_view(), name='calendario'),
+    path('calendario/data/', calendario.EventoDataView.as_view(), name='eventos_data'),
+    path('calendario/por-fecha/', calendario.EventosPorFechaView.as_view(), name='eventos_por_fecha'),
+    path('calendario/categorias-stats/', calendario.EventoCategoriaStatsView.as_view(), name='categorias_stats'),
+    path('calendario/obtener/<int:pk>/', calendario.EventoDetailView.as_view(), name='obtener_evento'),
+    path('calendario/crear/', calendario.EventoCreateView.as_view(), name='crear_evento'),
+    path('calendario/editar/<int:pk>/', calendario.EventoUpdateView.as_view(), name='editar_evento'),
+    path('calendario/completar/<int:pk>/', calendario.EventoCompletarView.as_view(), name='completar_evento'),
+    path('calendario/eliminar/<int:pk>/', calendario.EventoEliminarView.as_view(), name='eliminar_evento'),
+
+    # --- NOTIFICACIONES ---
+    path('notificaciones/', notificaciones.NotificacionesView.as_view(), name='notificaciones'),
+    path('notificaciones/api/kpis/', notificaciones.api_kpis_notificaciones, name='api_kpis'),
+    path('notificaciones/test-notif/', notificaciones.test_notificacion, name='test_notif'),
+    # --- NUEVAS URLs NOTIFICACIONES ---
+    path('notificaciones/api/notificaciones/', notificaciones.api_notificaciones, name='api_notificaciones'),
+    path('notificaciones/api/notif-read/<int:pk>/', notificaciones.api_mark_read, name='api_mark_read'),
+    path('notificaciones/api/check-triggers/', notificaciones.api_check_triggers, name='api_check_triggers'),
+    path('notificaciones/api/notificaciones-agrupadas/', notificaciones.api_notificaciones_agrupadas, name='api_notificaciones_agrupadas'),
+    path('notificaciones/api/notif-group-read/<str:tipo>/', notificaciones.api_mark_group_read, name='api_mark_group_read'),
+
+
+    # --- PROVEEDORES ---
+    path('proveedores/', proveedores.ProveedorListView.as_view(), name='proveedores_list'),
+    path('proveedores/data/', proveedores.ProveedorDataView.as_view(), name='proveedores_data'),
+    path('proveedores/crear/', proveedores.ProveedorCreateView.as_view(), name='proveedores_create'),
+    path('proveedores/editar/<int:pk>/', proveedores.ProveedorUpdateView.as_view(), name='proveedores_update'),
+    path('proveedores/eliminar/<int:pk>/', proveedores.ProveedorDeleteView.as_view(), name='proveedores_delete'),
+    path('proveedores/activar/<int:pk>/', proveedores.ProveedorActivateView.as_view(), name='proveedores_activate'),
+    path('proveedores/detalle/<int:pk>/', proveedores.ProveedorDetailView.as_view(), name='proveedores_detail'),
+
+    # --- RESPALDOS ---
+    path('respaldos/', respaldos.RespaldoListView.as_view(), name='respaldos_list'),
+    path('respaldos/crear/', respaldos.RespaldoCreateView.as_view(), name='generar_respaldo'),
+    path('respaldos/eliminar/<int:pk>/', respaldos.RespaldoDeleteView.as_view(), name='eliminar_respaldo'),
+    path('respaldos/restaurar/<int:pk>/', respaldos.RespaldoRestoreView.as_view(), name='restaurar_respaldo'),
+    path('respaldos/restaurar-datos/', respaldos.views.restaurar_datos, name='restaurar_datos'),
+    path('descargar/<int:id>/', respaldos.DescargarRespaldoView.as_view(), name='descargar_respaldo'),
+    path('modal/respaldos/', modal_respaldos, name='modal_respaldos'),
+
+    # --- SALIDA DE PRODUCTOS ---
+    path('salida/', salida_p.SalidaProductoView.as_view(), name='salida_producto'),
+    path('salida/data/', salida_p.SalidaDataView.as_view(), name='salida_data'),
+    path('salida/crear/', salida_p.SalidaProductoCreateView.as_view(), name='salida_producto_create'),
+    path('salida/anular/<int:pk>/', salida_p.SalidaProductoAnularView.as_view(), name='salida_producto_anular'),
+    path('salida/detalle/<int:pk>/', salida_p.DetalleSalidaView.as_view(), name='salida_detalle'),
+
+    # --- BOM (ESTRUCTURA DE PRODUCTOS) ---
+    path('bom/', bom.BomListView.as_view(), name='bom_list'),
+    path('bom/crear-receta/', bom.bom_crear_receta, name='bom_crear_receta'),
+    path('bom/editar-receta/', bom.bom_editar_receta, name='bom_editar_receta'),
+    path('bom/eliminar/<int:pk>/', bom.BomDeleteView.as_view(), name='bom_eliminar'),
+    path('bom/eliminar-receta/', bom.bom_eliminar_receta, name='bom_eliminar_receta'),
+    path('bom/por-producto/', bom.bom_por_producto, name='bom_por_producto'),
+    path('bom/data/', bom.bom_data, name='bom_data'),
+    path('bom/data-json/', bom.BomDataListView.as_view(), name='bom_data_json'),
+
+    # --- INVENTARIO ---
+    path('inventario/', inventario.InventarioListView.as_view(), name='inventario'),
+
+    # --- LOGÍSTICA Y PLANEACIÓN ---
+    path('logistica/', logistica.LogisticaListView.as_view(), name='logistica'),
+
+    # --- GESTION DE DATOS ---
+    path('gestion/', gestion.GestionListView.as_view(), name='gestion'),
+
+    # --- SUMINISTROS ---
+    path('suministros/', suministros.SuministrosListView.as_view(), name='suministros'),
+
+    # --- PEDIDOS ---
+    path('pedido/', pedido.PedidoListView.as_view(), name='pedido_list'),
+    path('pedido/data/', pedido.PedidoDataView.as_view(), name='pedido_data'),
+    path('pedido/nuevo/', pedido.PedidoCreateView.as_view(), name='crear_pedido'),
+    path('pedido/ver/<int:pk>/', pedido.PedidoDetailView.as_view(), name='pedido_detalle'),
+    path('pedido/estado/<int:pk>/', pedido.PedidoStateChangeView.as_view(), name='cambiar_estado'),
+    path('pedido/editar/<int:pk>/', pedido.PedidoUpdateView.as_view(), name='editar_pedido'),
+    path('pedido/pago/<int:pk>/', pedido.PagoUpdateView.as_view(), name='pedido_pago'),
+    path('pedido/comprobante/<int:pk>/pdf/', pedido.PedidoComprobantePDFView.as_view(), name='pedido_comprobante_pdf'),
+    path('pedido/comprobante/<int:pk>/html/', pedido.PedidoComprobanteHTMLView.as_view(), name='pedido_comprobante_html'),
+    path('pedido/comprobante/<int:pk>/enviar/', pedido.PedidoEnviarComprobanteView.as_view(), name='pedido_comprobante_enviar'),
+
+    # --- DESPACHO ---
+    path('despacho/', despacho.DespachoListView.as_view(), name='despacho_list'),
+    path('despacho/data/', despacho.DespachoDataView.as_view(), name='despacho_data'),
+    path('despacho/crear/', despacho.DespachoCreateView.as_view(), name='despacho_crear'),
+    path('despacho/estado/<int:pk>/', despacho.DespachoUpdateEstadoView.as_view(), name='despacho_estado'),
+    path('despacho/detalle/<int:pk>/', despacho.DespachoDetailView.as_view(), name='despacho_detalle'),
+    path('despacho/por-fecha/', despacho.DespachosPorFechaView.as_view(), name='despacho_por_fecha'),
+
+    # --- CLIENTES ---
+    path('clientes/', clientes.ClienteListView.as_view(), name='clientes_list'),
+    path('clientes/data/', clientes.ClienteDataView.as_view(), name='clientes_data'),
+    path('clientes/kpi/', clientes.ClienteKPIView.as_view(), name='clientes_kpi'),
+    path('clientes/obtener/<int:pk>/', clientes.ClienteDetailView.as_view(), name='clientes_obtener'),
+    path('clientes/crear/', clientes.ClienteCreateView.as_view(), name='clientes_crear'),
+    path('clientes/editar/<int:pk>/', clientes.ClienteUpdateView.as_view(), name='clientes_editar'),
+    path('clientes/toggle/<int:pk>/', clientes.ClienteToggleEstadoView.as_view(), name='clientes_toggle'),
+    path('clientes/historial/<int:pk>/', clientes.ClienteHistorialView.as_view(), name='clientes_historial'),
+    path('clientes/historial-pagos/<int:pk>/', clientes.ClientePagosHistorialView.as_view(), name='clientes_historial_pagos'),
+    path('clientes/pago/', clientes.ClientePagoView.as_view(), name='clientes_pago'),
+
+    # --- mantenimiento ---
+    path('mantenimientos/', MantenimientoListView.as_view(), name='mantenimientos_list'),
+    path('mantenimientos/crear/', MantenimientoCreateView.as_view(), name='mantenimientos_crear'),
+    path('mantenimientos/estado/<int:pk>/', MantenimientoUpdateEstadoView.as_view(), name='mantenimientos_estado'),
+    path('mantenimientos/detalle/<int:pk>/', MantenimientoDetailView.as_view(), name='mantenimientos_detalle'),
+path('ia/asistente-inventario/', include('ia.urls'), name='asistente_inventario'),
+]

@@ -1,0 +1,61 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block header_title %}INSUMOS{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/insumos.css' %}">
+<link href="{% static 'ap1/css/select2.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<main class="main-container">
+
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="switch-container" title="Mostrar insumos inactivos">
+                <span class="switch-text">Mostrar Inactivos</span>
+                <label class="switch-control">
+                    <input type="checkbox" id="toggleInactivos">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="toolbar-right">
+            <button class="btn-agregar" id="btn-agregar-insumo">
+                <i class="fas fa-plus"></i> Agregar Insumo
+            </button>
+        </div>
+    </div>
+
+    <div class="container-tabla">
+        <table id="tablaInsumos" class="display">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Proveedor</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</main>
+
+{% include "insumos/agregarinsumo.html" %}
+{% include "insumos/editarinsumo.html" %}
+{% include "insumos/verinsumo.html" %}
+{% include "insumos/eliminarinsumo.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ap1/js/jquery.dataTables.min.js' %}"></script>
+<script>
+    const INSUMOS_DATA_URL       = "{% url 'insumos_data' %}";
+</script>
+<script src="{% static 'ap1/js/insumos.js' %}?v=4"></script>
+{% endblock %}

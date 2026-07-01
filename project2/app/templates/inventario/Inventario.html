@@ -1,0 +1,59 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block title %}Existencias{% endblock %}
+
+{% block header_title %}INVENTARIO{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/proveedores.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container menu">
+    <div class="menu-layout">
+
+            <a href="{% url 'productos' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/productos.png' %}" alt="Módulo Productos">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-bed"></i></div>
+                    <div class="menu-card-content">
+                        <h3>PRODUCTOS</h3>
+                        <p class="muted">Catálogo y precios</p>
+                    </div>
+                </article>
+            </a>
+            <a href="{% url 'insumos' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/insumos.png' %}" alt="Módulo Insumos">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="menu-card-content">
+                        <h3>INSUMOS</h3>
+                        <p class="muted">Entradas y stock</p>
+                    </div>
+                </article>
+            </a>
+
+            <a href="{% url 'categorias' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/categorias.png' %}" alt="Módulo Categorías">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-tags"></i></div>
+                    <div class="menu-card-content">
+                        <h3>CATEGORÍAS</h3>
+                        <p class="muted">Gestión de categorías</p>
+                    </div>
+                </article>
+            </a>
+
+    </div>
+</main>
+{% endblock %}

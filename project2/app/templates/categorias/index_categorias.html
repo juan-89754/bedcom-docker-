@@ -1,0 +1,105 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block header_title %}CATEGORÍAS{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/styles_categorias.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/styles_productos_theme.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="productos">
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="switch-container">
+                <span class="switch-text">Mostrar inactivos</span>
+                <label class="switch-control">
+                    <input type="checkbox" id="toggleInactivos" {% if request.GET.inactivos %}checked{% endif %}>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="toolbar-right">
+            <button class="button-3" onclick="event.preventDefault(); abrirModal('modalAdd');">
+                <i class="fas fa-plus"></i> <span class="btn-text">Nueva Categoría</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container-tabla">
+        <table id="tablaCategorias" class="display responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {% for c in categorias %}
+                <tr class="{% if not c.estado %}inactive{% endif %}">
+                    <td>{{ c.nombre }}</td>
+                    <td>{{ c.descripcion|truncatechars:80 }}</td>
+                    <td>
+                        {% if c.estado %}
+                            <span class="status-badge status-active"> Activo</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="acciones">
+                            <button class="edit-btn" title="Editar categoría" onclick="abrirModalEditar('{{ c.id }}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            {% if c.estado %}
+                            <button class="delete-btn" title="Desactivar categoría"
+                                    onclick="abrirModalEliminar('{{ c.id }}', '{{ c.nombre }}')">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            {% else %}
+                            <button class="activate-btn" title="Activar categoría"
+                                    onclick="abrirModalActivar('{{ c.id }}', '{{ c.nombre }}')">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px;">No hay categorías disponibles en la base de datos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div id="modalAdd" class="modal" style="display: none;">
+    {% include "categorias/modal_add.html" %}
+</div>
+
+<div id="modalEdit" class="modal" style="display: none;"></div>
+
+<div id="modalDelete" class="modal" style="display: none;">
+    {% include "categorias/modal_delete.html" %}
+</div>
+
+<div id="modalActivar" class="modal" style="display: none;">
+    {% include "categorias/modal_activar.html" %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ap1/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'ap1/js/script_categorias.js' %}"></script>
+
+{% endblock %}

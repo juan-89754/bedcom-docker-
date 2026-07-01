@@ -1,0 +1,128 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block header_title %}CLIENTES{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/cliente.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/styles_productos_theme.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="main-container">
+
+  <!-- ══ TOOLBAR ══ -->
+  <div class="toolbar">
+
+    <div class="toolbar-left">
+      <div class="switch-container">
+        <span class="switch-text">Mostrar Inactivos</span>
+        <label class="switch-control">
+          <input type="checkbox" id="toggleInactivos">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="toolbar-right">
+      <button class="btn-agregar" id="btnNuevoCliente">
+        <i class="fas fa-user-plus"></i> Nuevo Cliente
+      </button>
+    </div>
+
+  </div>
+  <!-- FIN TOOLBAR -->
+
+  <!-- ══ KPI CARDS ══ -->
+  <div class="kpi-grid">
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--total">
+        <i class="fas fa-users"></i>
+      </div>
+      <div>
+        <div class="kpi-value" id="kpi-total">{{ total_clientes }}</div>
+        <div class="kpi-label">Total Clientes</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--activo">
+        <i class="fas fa-user-check"></i>
+      </div>
+      <div>
+        <div class="kpi-value" id="kpi-activos" style="color:var(--color-exito)">
+          {{ activos }}
+        </div>
+        <div class="kpi-label">Activos</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--inactivo">
+        <i class="fas fa-user-slash"></i>
+      </div>
+      <div>
+        <div class="kpi-value" id="kpi-inactivos" style="color:var(--color-inactivar)">
+          {{ inactivos }}
+        </div>
+        <div class="kpi-label">Inactivos</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon kpi-icon--deuda">
+        <i class="fas fa-file-invoice-dollar"></i>
+      </div>
+      <div>
+        <div class="kpi-value" id="kpi-con-deuda" style="color:var(--color-deuda)">
+          {{ con_deuda }}
+        </div>
+        <div class="kpi-label">Con Deuda</div>
+      </div>
+    </div>
+
+  </div>
+  <!-- FIN KPI -->
+
+  <!-- ══ TABLA ══ -->
+  <div class="container-tabla">
+    <table id="tablaClientes" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Teléfono</th>
+          <th>Deuda</th>
+          <th>Estado</th>
+          <th class="no-sort">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+{% include 'clientes/modals/modal_ver.html' %}
+{% include 'clientes/modals/modal_form.html' %}
+{% include 'clientes/modals/modal_historial.html' %}
+{% include 'clientes/modals/modal_historial_pagos.html' %}
+
+<div id="modalInactivar" class="modal">
+    {% include "clientes/modals/modal_inactivar.html" %}
+</div>
+
+<div id="modalActivar" class="modal">
+    {% include "clientes/modals/modal_activar.html" %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ap1/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'ap1/js/validaciones_clientes.js' %}"></script>
+<script src="{% static 'ap1/js/clientes.js' %}?v=2"></script>
+{% endblock %}

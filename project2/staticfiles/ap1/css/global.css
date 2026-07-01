@@ -1,0 +1,664 @@
+:root {
+  /* FULL FLUID RESPONSIVE SYSTEM - SYNC menu.css */
+  --bp-xl: 1200px;
+  --bp-lg: 992px;
+  --bp-md: 768px;
+  --bp-sm: 576px;
+  --bp-xs: 380px;
+
+  /* SPACING */
+  --pad-xs: clamp(0.75rem, 2vw, 1rem);
+  --pad-sm: clamp(1rem, 3vw, 1.5rem);
+  --pad-md: clamp(1.5rem, 4vw, 2.5rem);
+  --pad-lg: clamp(2rem, 5vw, 3rem);
+
+  /* TYPO */
+  --fs-xs: clamp(0.8rem, 2vw, 0.875rem);
+  --fs-sm: clamp(0.875rem, 2.5vw, 1rem);
+  --fs-md: clamp(1rem, 3vw, 1.125rem);
+  --fs-lg: clamp(1.125rem, 4vw, 1.5rem);
+  --fs-xl: clamp(1.5rem, 5vw, 2rem);
+
+  /* LAYOUT */
+  --container-max: clamp(1000px, 95vw, 1400px);
+  --topbar-h: clamp(64px, 12vh, 80px);
+  --gap-sm: clamp(1rem, 3vw, 1.5rem);
+  --gap-lg: clamp(1.5rem, 4vw, 2rem);
+
+  --fondo: url("../img/fondo.jpg");
+  --bg: #0b1220;
+  --card: #1b2537cc;
+  --card-hover: #374b72cc;
+  --text: #e9eef7;
+  --muted: #a9b3c7;
+  --ok: #2ecc71;
+  --warn: #f1c40f;
+  --info: #5fa8ff;
+  --accent: #6c5ce7;
+  --danger: #e74c3c;
+  --radius: 8px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+
+  /* Variables específicas de login */
+  --fondo-login: url('../img/fondo.jpg');
+  --color-texto: #e9eef7;
+  --color-botones: #007bff;
+  --tamaño-titulo: 2.5vh;
+  --tamaño-texto: 2vh;
+  --color-texto-botones: white;
+  --color-fondo-titulo: rgba(79, 137, 232, 0.5);
+  --color-borde: rgba(255, 255, 255, 0.15);
+  --color-fondo-formulario: rgba(27, 37, 55, 0.85);
+  --color-input: rgba(255, 255, 255, 0.1);
+  --color-input-border: rgba(255, 255, 255, 0.2);
+  --color-input-text: #e9eef7;
+
+  /* Variables para mensajes de éxito */
+  --success-bg-start: #d4edda;
+  --success-bg-end: #c3e6cb;
+  --success-text: #155724;
+  --success-border: #c3e6cb;
+
+  /* Variables para mensajes de error */
+  --error-bg: #fcebea;
+  --error-text: #e74c3c;
+  --error-border: #e74c3c;
+
+  /* Variable para hover de botones */
+  --color-botones-hover: #0056b3;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: var(--fondo-login);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: var(--pad-sm);
+  color: var(--text);
+}
+/* ================================ */
+/* ESTILOS PARA BOTÓN DE IDIOMA */
+/* ================================ */
+
+.idioma-container {
+  position: fixed;
+  top: var(--pad-sm);
+  right: var(--pad-sm);
+  z-index: 1000;
+}
+
+.boton-idioma {
+  /* Touch target 44px+ */
+  width: clamp(44px, 12vw, 52px);
+  height: clamp(44px, 12vw, 52px);
+  /* Apariencia de botón azul redondeado */
+  background: var(--color-botones);
+  color: var(--color-texto-botones);
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--pad-xs);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* Tipografía y alineación */
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--fs-sm);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pad-xs);
+  
+  /* Efectos visuales */
+  box-shadow: var(--shadow);
+}
+
+.boton-idioma:hover {
+  background: var(--color-botones-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+.boton-idioma:active {
+  transform: translateY(0);
+}
+
+/* ================================ */
+/* ESTILOS PARA BOTÓN DE AYUDA */
+/* ================================ */
+
+.ayuda-container {
+  position: fixed;
+  bottom: var(--pad-sm);
+  right: var(--pad-sm);
+  z-index: 1000;
+}
+
+.boton-ayuda {
+  /* Touch target 44px+ */
+  width: clamp(44px, 12vw, 52px);
+  height: clamp(44px, 12vw, 52px);
+  background: var(--color-botones);
+  color: var(--color-texto-botones);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* Centrar icono */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Efectos visuales */
+  box-shadow: var(--shadow);
+}
+
+.boton-ayuda:hover {
+  background: var(--color-botones-hover);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+.boton-ayuda:active {
+  transform: scale(1.05);
+}
+
+.boton-ayuda i {
+  font-size: 1.3em;
+}
+
+/* ================================ */
+/* RESPONSIVIDAD */
+/* ================================ */
+
+/* SYSTEM BREAKPOINTS */
+@media (max-width: var(--bp-md)) {
+  .idioma-container {
+    top: var(--pad-xs);
+    right: var(--pad-xs);
+  }
+  
+  .ayuda-container {
+    bottom: var(--pad-xs);
+    right: var(--pad-xs);
+  }
+  
+  .boton-idioma {
+    padding: var(--pad-xs);
+    font-size: var(--fs-xs);
+  }
+  
+  .boton-ayuda {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .boton-ayuda i {
+    font-size: 1.2em;
+  }
+}
+.titulo {
+  padding: var(--pad-sm) var(--pad-md);
+  color: var(--text);
+  border-radius: var(--radius);
+  background-color: var(--color-fondo-titulo);
+  margin-bottom: var(--pad-md);
+  font-size: var(--fs-xl);
+  text-align: center;
+}
+
+.contenedor {
+  text-align: center;
+  background: var(--card);
+  padding: var(--pad-lg);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-borde);
+  max-width: clamp(350px, 90vw, 450px);
+  width: 100%;
+  color: var(--text);
+}
+
+.formulario {
+  border: 1px solid var(--color-borde);
+  padding: var(--pad-md);
+  background: var(--color-fondo-formulario);
+  border-radius: var(--radius);
+}
+
+.formulario form input {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 15px;
+  margin: 10px auto;
+  border: 1px solid var(--color-input-border);
+  border-radius: 8px;
+  font-size: var(--tamaño-texto);
+  background: var(--color-input);
+  color: var(--color-input-text);
+  transition: all 0.3s ease;
+}
+
+.formulario form input:focus {
+  outline: none;
+  border-color: var(--color-botones);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.formulario form input::placeholder {
+  color: var(--color-muted);
+}
+
+.botonr {
+  background: var(--color-botones);
+  color: var(--color-texto-botones);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 50px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background 0.3s ease;
+  font-size: var(--tamaño-texto);
+}
+
+.botonr:hover {
+  background: var(--color-botones-hover);
+}
+
+.label {
+  text-align: left;
+  color: var(--color-texto);
+  margin-left: 5px;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.pregunta {
+  font-weight: bold;
+  color: white;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pregunta a {
+  color:white;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Estilos para login */
+.login-container label {
+  display: block;
+  text-align: left;
+  margin: 10px 0 5px;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.login-container a {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.9em;
+  text-decoration: none;
+  color: black;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
+.icono {
+  width: 60px;
+  margin-bottom: 15px;
+}
+
+/* Estilos para recuperar contraseña */
+.form-instruction {
+  color: #333;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.email-input {
+  width: calc(100% - 20px);
+  padding: 15px 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.code-inputs {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.code-input {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+}
+/* Estilos del pop-up de ayuda */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: none; /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #1b2537, #0f172a);
+    padding: 30px;
+    border-radius: 18px;
+    width: 90%;
+    max-width: 500px;
+    text-align: left;
+    color: var(--color-texto);
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--color-muted);
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--color-texto);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--color-texto);
+}
+
+.modal-faq-item {
+    margin-bottom: 15px;
+}
+
+.modal-faq-item h4 {
+    margin: 0;
+    color: var(--color-botones);
+    cursor: pointer;
+}
+
+.modal-faq-item p {
+    margin-top: 5px;
+    padding-left: 15px;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    display: none; /* Oculto por defecto */
+    color: var(--color-muted);
+}
+
+.modal-contact-form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-contact-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-texto);
+}
+
+.modal-contact-form input,
+.modal-contact-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-input-border);
+    border-radius: 8px;
+    background: var(--color-input);
+    color: var(--color-input-text);
+    font-size: 14px;
+}
+
+.modal-contact-form input:focus,
+.modal-contact-form textarea:focus {
+    outline: none;
+    border-color: var(--color-botones);
+}
+
+.modal-contact-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-botones);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.modal-contact-form button:hover {
+    background: var(--color-botones-hover);
+    transform: translateY(-2px);
+}
+
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.password-container button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: var(--color-muted);
+  padding: 5px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-container button:hover {
+  color: var(--color-botones);
+  transform: translateY(-50%) scale(1.1);
+}
+/* 1. Hacer que el texto de instrucción sea blanco/gris claro */
+.instruccion-clara {
+  color: var(--text); /* Usa el color e9eef7 de tus variables */
+  font-size: 1rem;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* 2. Evitar que el botón se salga (hacerlo bloque) */
+.botonr {
+  display: inline-block;
+  width: 100%; /* Ocupa el ancho del formulario */
+  text-decoration: none;
+}
+
+/* 3. Estilizar el link de 'Volver' para que no sea morado */
+.pregunta a {
+  color: var(--brand) !important; /* Usa el azul claro 5cc8ff */
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.pregunta a:hover {
+  text-decoration: underline;
+}
+
+/* 4. Asegurar que el input de correo se vea como los de login */
+.formulario input {
+  width: 100% !important;
+  background: var(--color-input) !important;
+  color: var(--color-input-text) !important;
+  border: 1px solid var(--color-input-border) !important;
+}
+
+.password-container button:focus {
+  outline: none;
+  color: var(--color-botones);
+}
+
+.password-container button:active {
+  transform: translateY(-50%) scale(0.95);
+}
+/* Estilo del modal emergente */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, #1b2537, #0f172a);
+  padding: 30px;
+  border-radius: 18px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+  color: var(--color-texto);
+}
+
+.modal-content p {
+  margin-bottom: 25px;
+  font-size: 1rem;
+  color: var(--color-muted);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-buttons button {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-buttons .btn-cancelar {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-texto);
+}
+
+.modal-buttons .btn-cancelar:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.modal-buttons .btn-confirmar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+}
+
+.modal-buttons .btn-confirmar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+
+/* Media queries para responsividad */
+/* SYSTEM BREAKPOINTS */
+@media (max-width: var(--bp-md)) {
+  .contenedor {
+    padding: var(--pad-sm);
+  }
+  
+  .titulo {
+    font-size: var(--fs-lg);
+    padding: var(--pad-sm) var(--pad-md);
+  }
+  
+  .code-input {
+    width: clamp(45px, 12vw, 55px);
+    height: clamp(45px, 12vw, 55px);
+    font-size: var(--fs-md);
+  }
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill {
+    border: 1px solid var(--color-principal) !important;
+  }

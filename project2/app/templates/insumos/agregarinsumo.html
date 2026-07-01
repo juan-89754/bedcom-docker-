@@ -1,0 +1,89 @@
+<div class="modal" id="modal-agregar">
+    <div class="modal-contenido">
+        <div class="modal-header modal-header--agregar">
+            <h3 class="modal-titulo">
+                <span id="modal-agregar-titulo">Agregar Insumo</span>
+            </h3>
+        </div>
+
+        <form method="post" id="form-agregar">
+            {% csrf_token %}
+
+            <div class="form-grupo">
+                <label for="ag_nombre">Nombre</label>
+                <input type="text" name="nombre" id="ag_nombre" class="form-input"
+                       maxlength="100" autocomplete="off" required>
+            </div>
+
+            <div class="form-grupo">
+                <label for="ag_descripcion" >Descripción <span class="label-opcional"></span></label>
+                <textarea name="descripcion" id="ag_descripcion" class="form-input form-textarea"
+                          maxlength="600" rows="2"></textarea>
+            </div>
+
+            <div class="divicion">
+                <div class="form-grupo">
+                    <label for="ag_cantidad">Cantidad</label>
+                    <input type="number" name="cantidad" id="ag_cantidad" class="form-input"
+                           min="1" step="1" required>
+                </div>
+                <div class="form-grupo">
+                    <label for="ag_precio">Precio unitario</label>
+                    <input type="number" name="precio" id="ag_precio" class="form-input"
+                           min="0.01" step="0.01" required>
+                </div>
+            </div>
+
+        <div class="form-grupo">
+                <label for="ag_unidad">Unidad de medida</label>
+                <select name="unidad_medida" id="ag_unidad" class="form-select" required>
+                    <option value="" disabled selected>— Selecciona una unidad —</option>
+                    <option value="kg">Kilogramo (kg)</option>
+                    <option value="lb">Libra (lb)</option>
+                    <option value="L">Litro (L)</option>
+                    <option value="gal">Galón (gal)</option>
+                    <option value="m">Metro (m)</option>
+                    <option value="m2">Metro cuadrado (m²)</option>
+                    <option value="m3">Metro cúbico (m³)</option>
+                    <option value="und">Unidad (und)</option>
+                    <option value="caja">Caja</option>
+                    <option value="rollo">Rollo</option>
+                </select>
+            </div>
+
+            <div class="divicion">
+                <div class="form-grupo">
+                    <label for="ag_proveedor">Proveedor</label>
+                    <select name="id_proveedor" id="ag_proveedor" class="form-select" required>
+                        <option value="" disabled selected>— Selecciona —</option>
+                        {% for p in proveedor %}
+                            <option value="{{ p.id }}">{{ p.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-grupo">
+                    <label for="ag_categoria">Categoría</label>
+                    <select name="id_categoria" id="ag_categoria" class="form-select" required>
+                        <option value="" disabled selected>— Selecciona —</option>
+                        {% for c in categorias %}
+                            <option value="{{ c.id }}">{{ c.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grupo">
+                <label for="ag_estado">Estado</label>
+                <select name="estado" id="ag_estado" class="form-select">
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="form-botones">
+                <button type="button" class="btn-cancelar" data-modal="modal-agregar">  Cancelar   </button>
+                <button type="submit" class="btn-guardar">Guardar   </button>           
+            </div>
+        </form>
+    </div>
+</div>

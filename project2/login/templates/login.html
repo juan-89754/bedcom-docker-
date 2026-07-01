@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title> 
+    
+    <link rel="stylesheet" href="{% static 'ap1/css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'ap1/css/all.min.css' %}">
+    <link rel="icon" href="{% static 'ap1/img/icono.png' %}" type="image/png">
+    
+    <link rel="stylesheet" href="{% static 'ap1/css/global_messages.css' %}">
+    <script src="{% static 'ap1/js/menu.js' %}" defer></script>
+</head>
+<body>
+
+<!-- GLOBAL TOAST CONTAINER (login autónomo) -->
+<div id="global-toast-container"></div>
+<script>
+(function() {
+    var _shiftTimer = null;
+    function _dismiss(toast) {
+        if (toast._dismissed) return;
+        toast._dismissed = true;
+        toast.classList.add('toast-exit');
+        setTimeout(function() {
+            toast.remove();
+            var c = document.getElementById('global-toast-container');
+            if (c && c.children.length === 0) { c.classList.remove('toast-shifted'); clearTimeout(_shiftTimer); _shiftTimer = null; }
+        }, 400);
+    }
+    window.showToast = function(msg, tipo) {
+        tipo = tipo || 'success';
+        if (tipo === 'danger') tipo = 'error';
+        var container = document.getElementById('global-toast-container');
+        if (!container) return;
+        var iconMap = { success:'fa-check-circle', warning:'fa-exclamation-triangle', error:'fa-times-circle', info:'fa-info-circle' };
+        var toast = document.createElement('div');
+        toast.className = 'toast-item toast-' + tipo;
+        toast.innerHTML = '<div class="toast-content"><span class="toast-icon"><i class="fas ' + (iconMap[tipo]||iconMap.info) + '"></i></span><span class="toast-text">' + msg + '</span></div><button type="button" class="toast-close"><i class="fas fa-times"></i></button>';
+        toast.querySelector('.toast-close').onclick = function() { _dismiss(toast); };
+        container.appendChild(toast);
+        requestAnimationFrame(function() { requestAnimationFrame(function() { toast.classList.add('toast-visible'); }); });
+        if (!_shiftTimer) { _shiftTimer = setTimeout(function() { container.classList.add('toast-shifted'); }, 1200); }
+        setTimeout(function() { _dismiss(toast); }, 5500);
+    };
+    window.mostrarMensaje = function(tipo, texto) { window.showToast(texto, tipo); };
+})();
+</script>
+
+
+
+    <div class="ayuda-container">
+        <button class="boton-ayuda">
+            <i class="fa-solid fa-question"></i>
+        </button>
+    </div>
+
+    <div class="contenedor">
+        <h1 class="titulo" data-i18n="titulo-login">INICIAR SESIÓN</h1>
+        
+        <div class="formulario">
+            <form id="loginForm" method="post" action="{% url 'login:login' %}">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                    <div class="error-django">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Usuario o contraseña incorrectos.
+                    </div>
+                {% endif %}
+                
+                <!-- Global Toast Container — poblado solo por JS -->
+                <div id="global-toast-container"></div>
+
+                {% if messages %}
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        {% for message in messages %}
+                        window.showToast("{{ message|escapejs }}", "{{ message.tags|default:'info' }}");
+                        {% endfor %}
+                    });
+                </script>
+                {% endif %}
+                
+                <label for="loginCorreo" class="label" data-i18n="label-correo">Correo electrónico</label>
+                <input type="text" id="loginCorreo" name="username" placeholder="usuario@dominio.com" required>
+                <div id="loginEmailError" class="error-msg"></div>
+                
+                <label for="loginContrasena" class="label" data-i18n="label-contrasena">Contraseña</label>
+                <div class="password-container">
+                    <input type="password" id="loginContrasena" name="password" placeholder="Contraseña" required>
+                    <button type="button" id="toggleLoginPassword">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <div id="loginPasswordError" class="error-msg"></div>
+                
+                <button type="submit" class="botonr" id="loginButton">Continuar</button>
+            </form>
+            
+            <p class="pregunta">
+                <a href="{% url 'login:password_reset' %}" class="menu-card-link">¿Olvidaste tu contraseña?</a>
+            </p>
+
+            <p class="pregunta">
+                <a href="{% url 'login:registro_usuario' %}" id="crear-cuenta-enlace" data-i18n="texto-crear-cuenta">¿No tienes una cuenta? Crear cuenta</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal de Preguntas Frecuentes -->
+    <div class="modal-overlay" id="faqModal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close" id="faqClose">&times;</span>
+            <h2 class="modal-title">Preguntas Frecuentes</h2>
+            
+            <div class="modal-faq-item">
+                <h4 onclick="toggleFaq(this)">¿Cómo inicio sesión?</h4>
+                <p>Ingresa tu correo electrónico y contraseña en los campos correspondientes, luego haz clic en "Continuar".</p>
+            </div>
+            
+            <div class="modal-faq-item">
+                <h4 onclick="toggleFaq(this)">¿Qué hago si olvidé mi contraseña?</h4>
+                <p>Haz clic en "¿Olvidaste tu contraseña?" y sigue las instrucciones para recuperarla.</p>
+            </div>
+            
+            <div class="modal-faq-item">
+                <h4 onclick="toggleFaq(this)">¿Cómo contacto al administrador?</h4>
+                <p>Envía un correo electrónico al soporte técnico indicando tu problema.</p>
+            </div>
+            
+            <div class="modal-faq-item">
+                <h4 onclick="toggleFaq(this)">¿El sistema acepta usuarios?</h4>
+                <p>Sí, el sistema permite crear usuarios. Contacta al administrador para crear una nueva cuenta.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'ap1/js/script_login.js' %}"></script>
+    <script>
+        // Funcionalidad del FAQ modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqModal = document.getElementById('faqModal');
+            const ayudaBtn = document.querySelector('.boton-ayuda');
+            const faqClose = document.getElementById('faqClose');
+            
+            // Abrir modal al hacer clic en el botón de ayuda
+            if (ayudaBtn) {
+                ayudaBtn.addEventListener('click', function() {
+                    faqModal.style.display = 'flex';
+                });
+            }
+            
+            // Cerrar modal al hacer clic en la X
+            if (faqClose) {
+                faqClose.addEventListener('click', function() {
+                    faqModal.style.display = 'none';
+                });
+            }
+            
+            // Cerrar modal al hacer clic fuera del contenido
+            if (faqModal) {
+                faqModal.addEventListener('click', function(e) {
+                    if (e.target === faqModal) {
+                        faqModal.style.display = 'none';
+                    }
+                });
+            }
+        });
+        
+        // Función para togglear las preguntas
+        function toggleFaq(element) {
+            const respuesta = element.nextElementSibling;
+            if (respuesta.style.display === 'block') {
+                respuesta.style.display = 'none';
+            } else {
+                respuesta.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

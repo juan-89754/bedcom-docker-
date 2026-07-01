@@ -1,0 +1,167 @@
+// Funciones para el modal de Nueva Salida
+// Extraído de modal_salida.html
+
+// Funciones para el modal
+function cerrarModalSalida() {
+    var modal = document.getElementById('modalSalida');
+    if (modal) {
+        modal.style.display = 'none';
+        var form = document.getElementById('formSalida');
+        if (form) form.reset();
+        
+        // Limpiar stock
+        var stockInput = document.getElementById('stockDisponible');
+        if (stockInput) stockInput.value = '';
+    }
+}
+
+function abrirModalSalida() {
+    var modal = document.getElementById('modalSalida');
+    if (modal) {
+        modal.style.display = 'flex';
+        
+        var productoSelect = document.getElementById('id_producto');
+        if (productoSelect) {
+            productoSelect.onchange = function() {
+                var stockInput = document.getElementById('stockDisponible');
+                var selectedOption = productoSelect.options[productoSelect.selectedIndex];
+                var stock = selectedOption.getAttribute('data-stock');
+                var pendiente = selectedOption.getAttribute('data-pendiente') === 'true';
+
+                if (stock && stock !== "null" && stock !== "") {
+                    if (stockInput) stockInput.value = stock + " unidades";
+                } else {
+                    if (stockInput) stockInput.value = "";
+                }
+
+                // Verificar si el producto está pendiente
+                var btnSave = document.querySelector('.btn-save');
+                var errorProducto = document.getElementById('errorProducto');
+                
+                if (pendiente) {
+                    if (errorProducto) {
+                        errorProducto.textContent = 'No se puede generar salida de un producto pendiente';
+                        errorProducto.style.display = 'block';
+                    }
+                    if (btnSave) {
+                        btnSave.disabled = true;
+                        btnSave.style.opacity = '0.5';
+                        btnSave.title = 'Producto pendiente - no se puede registrar salida';
+                    }
+                } else {
+                    if (errorProducto) {
+                        errorProducto.textContent = '';
+                        errorProducto.style.display = 'none';
+                    }
+                    if (btnSave) {
+                        btnSave.disabled = false;
+                        btnSave.style.opacity = '1';
+                        btnSave.title = '';
+                    }
+                }
+            };
+        }
+        
+        // Validación en tiempo real para el campo responsable
+        var responsableInput = document.getElementById('id_responsable');
+        if (responsableInput) {
+            responsableInput.oninput = function() {
+                var errorResponsable = document.getElementById('errorResponsable');
+                var regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]+$/;
+                
+                if (!regex.test(this.value) && this.value.length > 0) {
+                    if (errorResponsable) {
+                        errorResponsable.textContent = 'No se permiten caracteres especiales';
+                        errorResponsable.style.display = 'block';
+                    }
+
+                    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]/g, '');
+                } else {
+                    if (errorResponsable) {
+                        errorResponsable.textContent = '';
+                        errorResponsable.style.display = 'none';
+                    }
+                }
+            };
+        }
+    }
+}
+
+// ===============================
+// TOAST → usa window.showToast() global (base.html)
+// window.showErrorToast() y window.showSuccessToast() 
+// ya están definidas como aliases globales.
+// ===============================
+
+// ===============================
+// FUNCION PARA ENVIAR EL FORMULARIO
+// ===============================
+function enviarFormularioSalida() {
+
+    var form = document.getElementById('formSalida');
+    if (!form) return;
+    
+    var formData = new FormData(form);
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+
+        if (data.success) {
+
+            cerrarModalSalida();
+            window.showToast(data.message, 'success');
+
+            setTimeout(function() {
+                location.reload();
+            }, 1500);
+
+        } else {
+
+            var errorMessage = data.message || "Error al registrar";
+
+            if (data.errors) {
+
+                var nombresCampos = {
+                    id_producto: "Producto",
+                    cantidad: "Cantidad",
+                    fecha: "Fecha",
+                    motivo: "Motivo",
+                    responsable: "Responsable"
+                };
+
+                var errores = [];
+
+                for (var campo in data.errors) {
+                    var nombreCampo = nombresCampos[campo] || campo;
+                    errores.push("Debe completar el campo <b>" + nombreCampo + "</b>");
+                }
+
+                errorMessage = errores.join('<br>');
+            }
+
+            window.showToast(errorMessage, 'error');
+        }
+
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        window.showToast("Ocurrió un error al procesar la solicitud", 'error');
+    });
+}
+
+// Hacer las funciones globales disponibles
+window.cerrarModalSalida = cerrarModalSalida;
+window.abrirModalSalida = abrirModalSalida;
+window.enviarFormularioSalida = enviarFormularioSalida;

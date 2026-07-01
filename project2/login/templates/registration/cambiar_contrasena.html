@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambiar contraseña</title>
+  <link rel="stylesheet" href="{% static 'ap1/css/global.css' %}">
+  <link rel="stylesheet" href="{% static 'ap1/css/styles_crear_usuario.css' %}">
+  <link rel="stylesheet" href="{% static 'ap1/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'ap1/css/global_messages.css' %}">
+  <script src="{% static 'ap1/js/menu.js' %}" defer></script>
+  <link rel="icon" href="{% static 'ap1/img/icono.png' %}" type="image/png">
+</head>
+<body>
+
+<!-- GLOBAL TOAST CONTAINER (seguridad autónomo) -->
+<div id="global-toast-container"></div>
+<script>
+(function() {
+    var _shiftTimer = null;
+    function _dismiss(toast) {
+        if (toast._dismissed) return;
+        toast._dismissed = true;
+        toast.classList.add('toast-exit');
+        setTimeout(function() {
+            toast.remove();
+            var c = document.getElementById('global-toast-container');
+            if (c && c.children.length === 0) { c.classList.remove('toast-shifted'); clearTimeout(_shiftTimer); _shiftTimer = null; }
+        }, 400);
+    }
+    window.showToast = function(msg, tipo) {
+        tipo = tipo || 'success';
+        if (tipo === 'danger') tipo = 'error';
+        var container = document.getElementById('global-toast-container');
+        if (!container) return;
+        var iconMap = { success:'fa-check-circle', warning:'fa-exclamation-triangle', error:'fa-times-circle', info:'fa-info-circle' };
+        var toast = document.createElement('div');
+        toast.className = 'toast-item toast-' + tipo;
+        toast.innerHTML = '<div class="toast-content"><span class="toast-icon"><i class="fas ' + (iconMap[tipo]||iconMap.info) + '"></i></span><span class="toast-text">' + msg + '</span></div><button type="button" class="toast-close"><i class="fas fa-times"></i></button>';
+        toast.querySelector('.toast-close').onclick = function() { _dismiss(toast); };
+        container.appendChild(toast);
+        requestAnimationFrame(function() { requestAnimationFrame(function() { toast.classList.add('toast-visible'); }); });
+        if (!_shiftTimer) { _shiftTimer = setTimeout(function() { container.classList.add('toast-shifted'); }, 1200); }
+        setTimeout(function() { _dismiss(toast); }, 5500);
+    };
+    window.mostrarMensaje = function(tipo, texto) { window.showToast(texto, tipo); };
+})();
+</script>
+ <!-- Botón de Idioma - Esquina Superior Derecha -->
+
+
+<!-- Botón de Ayuda - Esquina Inferior Derecha -->
+
+  <h1 class="titulo">CAMBIAR CONTRASEÑA</h1>
+
+  <div class="contenedor">
+<div class="formulario">
+  <!-- Global Toast Container — poblado solo por JS -->
+  <div id="global-toast-container"></div>
+
+  {% if messages %}
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          {% for message in messages %}
+          window.showToast("{{ message|escapejs }}", "{{ message.tags|default:'info' }}");
+          {% endfor %}
+      });
+  </script>
+  {% endif %}
+  <form id="cambiarContrasenaForm" method="post" novalidate>
+        {% csrf_token %}
+        
+        <label class="label">{{ form.new_password1.label }}</label>
+        <div class="input-wrapper">
+          {{ form.new_password1 }}
+          <button type="button" class="password-toggle" onclick="togglePassword('id_new_password1', this)">
+            <i class="fas fa-eye" id="toggle-icon-new_password1"></i>
+          </button>
+        </div>
+        <span class="mensaje-error" id="error_new_password1"></span>
+        {% if form.new_password1.errors %}
+          <div class="django-errors error">{{ form.new_password1.errors }}</div>
+        {% endif %}
+
+        <label class="label">{{ form.new_password2.label }}</label>
+        <div class="input-wrapper">
+          {{ form.new_password2 }}
+          <button type="button" class="password-toggle" onclick="togglePassword('id_new_password2', this)">
+            <i class="fas fa-eye" id="toggle-icon-new_password2"></i>
+          </button>
+        </div>
+        <span class="mensaje-error" id="error_new_password2"></span>
+        {% if form.new_password2.errors %}
+          <div class="django-errors error">{{ form.new_password2.errors }}</div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+          <div class="django-errors error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <button type="submit" class="botonr">CAMBIAR CONTRASEÑA</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    // Adapted from script_crear_usuario.js for password change form
+    function togglePassword(id, el) {
+      const input = document.getElementById(id);
+      const icon = el.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    function validarPassword(password) {
+      if (password.length < 8) return 'Mínimo 8 caracteres';
+      if (!/[A-Z]/.test(password)) return 'Requiere al menos una mayúscula';
+      if (!/\d/.test(password)) return 'Requiere al menos un número';
+      if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) return 'Requiere al menos un carácter especial';
+      return '';
+    }
+
+    function mostrarError(input, mensaje) {
+      const errorId = 'error_' + input.name;
+      const errorSpan = document.getElementById(errorId);
+      if (errorSpan) {
+        errorSpan.textContent = mensaje;
+        errorSpan.classList.add('show');
+      }
+      input.classList.add('error');
+      input.classList.remove('success');
+      input.setCustomValidity(mensaje);
+    }
+
+    function ocultarError(input) {
+      const errorId = 'error_' + input.name;
+      const errorSpan = document.getElementById(errorId);
+      if (errorSpan) {
+        errorSpan.textContent = '';
+        errorSpan.classList.remove('show');
+      }
+      input.classList.remove('error');
+      if (input.value.trim()) input.classList.add('success');
+      input.setCustomValidity('');
+    }
+
+    function validarMatchPasswords() {
+      const pass1 = document.getElementById('id_new_password1');
+      const pass2 = document.getElementById('id_new_password2');
+      if (pass1.value && pass2.value && pass1.value !== pass2.value) {
+        mostrarError(pass2, 'Contraseñas no coinciden');
+      } else {
+        ocultarError(pass2);
+      }
+    }
+
+    function validarEnTiempoReal() {
+      const pass1 = document.getElementById('id_new_password1');
+      const pass2 = document.getElementById('id_new_password2');
+      const form = document.getElementById('cambiarContrasenaForm');
+
+      function syncAll() {
+        if (pass1) {
+          const error1 = validarPassword(pass1.value);
+          if (error1) mostrarError(pass1, error1);
+          else ocultarError(pass1);
+        }
+
+        if (pass2) {
+          const error2 = validarPassword(pass2.value);
+          if (error2) mostrarError(pass2, error2);
+          else ocultarError(pass2);
+
+          validarMatchPasswords();
+        }
+
+        // Actualiza mensajes de HTML5
+        if (form) {
+          try { form.reportValidity(); } catch (e) {}
+        }
+      }
+
+      if (pass1) {
+        pass1.addEventListener('input', function() {
+          const error = validarPassword(this.value);
+          if (error) mostrarError(this, error);
+          else ocultarError(this);
+          validarMatchPasswords();
+        });
+        pass1.addEventListener('blur', syncAll);
+      }
+
+      if (pass2) {
+        pass2.addEventListener('input', function() {
+          validarMatchPasswords();
+        });
+        pass2.addEventListener('blur', syncAll);
+      }
+
+      // Validar también si el usuario intenta enviar sin tocar campos
+      syncAll();
+    }
+
+    // Inicializar validaciones al cargar
+    (function initPasswordValidation() {
+      const pass1 = document.getElementById('id_new_password1');
+      const pass2 = document.getElementById('id_new_password2');
+      const form = document.getElementById('cambiarContrasenaForm');
+      if (form && (pass1 || pass2)) validarEnTiempoReal();
+    })();
+
+    document.getElementById('cambiarContrasenaForm').addEventListener('submit', function(e) {
+        let valido = this.checkValidity();
+        if (!valido) {
+          e.preventDefault();
+          // Forzar que el navegador muestre mensajes si aplica
+          try { this.reportValidity(); } catch (err) {}
+          if (window.showToast) window.showToast('Corrige los errores antes de enviar.', 'error');
+        }
+      });
+  </script>
+</body>
+</html>

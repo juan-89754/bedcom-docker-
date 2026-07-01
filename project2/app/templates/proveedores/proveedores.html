@@ -1,0 +1,59 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block header_title %}PROVEEDORES{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/proveedores.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/select2.min.css' %}">
+{% endblock %}
+{% block content %}
+<main class="proveedores">
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="switch-container">
+                <span class="switch-text">Mostrar inactivos</span>
+                <label class="switch-control">
+                    <input type="checkbox" id="toggleInactivos">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="toolbar-right">
+            <button class="button-3" onclick="abrirModal('modalAdd')">
+                <i class="fas fa-plus"></i> Nuevo Proveedor
+            </button>
+        </div>
+    </div>
+
+    <div class="container-tabla">
+        <table id="tablaProveedores" class="display responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaProveedoresBody">
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Modales-->
+{% include 'proveedores/modal_agregar.html' %}
+{% include 'proveedores/modal_editar.html' %}
+{% include 'proveedores/modal_eliminar.html' %}
+{% include 'proveedores/modal_activar.html' %}
+{% include 'proveedores/modal_ver.html' %}
+{% include 'proveedores/modal_notificacion.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ap1/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'ap1/js/proveedores.js' %}?v={% now 'U' %}"></script>
+{% endblock %}

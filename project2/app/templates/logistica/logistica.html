@@ -1,0 +1,173 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block title %}Inventario{% endblock %}
+
+{% block header_title %}LOGÍSTICA{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/proveedores.css' %}">
+
+<style>
+/* Logistica Grid - 3 cards per row */
+.logistica-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem 1rem;
+  width: 100%;
+}
+
+/* Ajuste de tamaño: tarjetas más pequeñas que el resto */
+.menu-card {
+  max-width: 80%;
+}
+
+/* Baja altura general y se reduce el alto de la imagen */
+.menu-card-image {
+  height: 130px !important;
+}
+
+.menu-icon-badge {
+  top: 110px !important;
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 1.05rem !important;
+}
+
+.menu-card-content {
+  padding: 20px 18px 16px !important;
+}
+
+.menu-card-content h3 {
+  font-size: 1rem !important;
+}
+
+.menu-card-content .muted {
+  font-size: 0.85rem !important;
+  margin-top: 4px !important;
+}
+
+@media (max-width: 992px) {
+  .logistica-grid {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .logistica-grid {
+      grid-template-columns: 1fr;
+  }
+
+  .menu-card-image {
+    height: 140px !important;
+  }
+
+  .menu-icon-badge {
+    top: 120px !important;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="container menu">
+    <div class="menu-layout">
+        <div class="logistica-grid menu-grid">
+            <a href="{% url 'salida_producto' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/salida.jpg' %}" alt="Módulo Salida de Productos">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-file-export"></i></div>
+                    <div class="menu-card-content">
+                        <h3>SALIDA DE PRODUCTOS</h3>
+                        <p class="muted">Movimientos</p>
+                    </div>
+                </article>
+            </a>
+
+            <a href="{% url 'entrada_p' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/entrada_p.png' %}" alt="Módulo Entrada de Productos">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-file-import"></i></div>
+                    <div class="menu-card-content">
+                        <h3>ENTRADA DE PRODUCTOS</h3>
+                        <p class="muted">Movimientos</p>
+                    </div>
+                </article>
+            </a>
+            <a href="{% url 'calendario' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/calendario.png' %}" alt="Módulo Calendario">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="menu-card-content">
+                        <h3>CALENDARIO</h3>
+                        <p class="muted">Fechas y reservas</p>
+                    </div>
+                </article>
+            </a>
+          
+            <a href="{% url 'clientes_list' %}">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/reportes.png' %}" alt="Módulo Clientes">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-users"></i></div>
+                    <div class="menu-card-content">
+                        <h3>CLIENTES</h3>
+                        <p class="muted">Directorio de contactos y clientes</p>
+                    </div>
+                </article>
+            </a>
+            <a href="{% url 'pedido_list' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/bom.png' %}" alt="Módulo BOM">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="menu-card-content">
+                        <h3>PEDIDOS</h3>
+                        <p class="muted">Gestión de pedidos</p>
+                    </div>
+                </article>
+            </a>
+            <a href="{% url 'despacho_list' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/inventario.png' %}" alt="Módulo Inventario">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                    <div class="menu-card-content">
+                        <h3>DESPACHOS</h3>
+                        <p class="muted">Control entregas</p>
+                    </div>
+                </article>
+            </a>
+            
+            <a href="{% url 'mantenimientos_list' %}" class="menu-card-link">
+                <article class="menu-card">
+                    <div class="menu-card-image">
+                        <img src="{% static 'ap1/img/fondo.jpg' %}" alt="mantenimientos">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="menu-icon-badge"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="menu-card-content">
+                        <h3>MANTENIMIENTO</h3>
+                        <p class="muted">Servicio post-venta</p>
+                    </div>
+                </article>
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}

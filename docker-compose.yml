@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: bedcom_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456789"
+      MYSQL_DATABASE: "bedcom"
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web:
+    build: .
+    container_name: bedcom_web
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=bedcom
+      - DB_USER=root
+      - DB_PASSWORD=123456789
+      - DB_HOST=db
+      - DB_PORT=3306
+    depends_on:
+      - db
+    volumes:
+      - ./project2:/app
+    command: >
+      bash -c "python manage.py migrate --noinput &&
+               python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  mysql_data:

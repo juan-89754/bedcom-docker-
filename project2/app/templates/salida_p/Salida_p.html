@@ -1,0 +1,70 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block header_title %}SALIDA DE PRODUCTOS{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/SalidaP.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/modal_salida.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/modal_detalle_salida.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="main-content">
+
+{# Tabla de salidas de productos #}
+<div class="toolbar">
+    <div class="toolbar-left">
+        <div class="switch-container">
+            <span class="switch-text">Mostrar anulados</span>
+            <label class="switch-control">
+                <input type="checkbox" id="toggleAnulados" onchange="toggleAnulados()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    <div class="toolbar-right">
+        <button type="button" class="btn-nueva-salida" onclick="abrirModalSalida()">
+            <i class="fas fa-plus"></i> Nueva Salida
+        </button>
+    </div>
+</div>
+<div class="table-container">
+    <table id="tablaSalidas" class="display responsive nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th><i class="fas fa-box"></i> Producto</th>
+                <th><i class="fas fa-sort-amount-up"></i> Cantidad</th>
+                <th><i class="fas fa-calendar"></i> Fecha</th>
+                <th><i class="fas fa-comment"></i> Motivo</th>
+                <th><i class="fas fa-user"></i> Responsable</th>
+                <th><i class="fas fa-info-circle"></i> Estado</th>
+                <th><i class="fas fa-bolt"></i> Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+</main>
+
+<!-- Modales con z-index escalonado para apertura individual -->
+<!-- Modal anular: confirmación nativa — usa window.showToast() de base.html -->
+<div style="position: relative; z-index: 10010;">
+{% include 'salida_p/modal_nueva_salida.html' %}
+</div>
+<div style="position: relative; z-index: 10020;">
+{% include 'salida_p/modal_detalle_salida.html' %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'ap1/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'ap1/js/modal_nueva_salida.js' %}"></script>
+<script src="{% static 'ap1/js/modal_detalle_salida.js' %}"></script>
+<script src="{% static 'ap1/js/SalidaP.js' %}?v=6"></script>
+{% endblock %}

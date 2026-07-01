@@ -1,0 +1,357 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block header_title %}PEDIDOS{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'ap1/css/pedido.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'ap1/css/styles_productos_theme.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="main-container">
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="switch-container" title="Mostrar pedidos anulados">
+        <span class="switch-text">Mostrar Anulados</span>
+        <label class="switch-control">
+          <input type="checkbox" id="toggleAnulados" {% if mostrar_anulados %}checked{% endif %}>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="toolbar-right">
+      <button type="button" class="btn-agregar" id="btnNuevoPedido">
+        <i class="fas fa-plus"></i> Nuevo Pedido
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="container-tabla">
+    <table id="tablaPedidos" class="display">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Total</th>
+          <th>Abono</th>
+          <th>Saldo</th>
+          <th>Estado</th>
+          <th class="no-sort">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+
+<!-- ══════════════════════════════
+     MODAL — VER DETALLE
+══════════════════════════════ -->
+<div class="modal" id="modalVer">
+  <div class="modal-contenido modal-contenido--wide">
+    <div class="modal-header modal-header--ver">
+      <h2 class="modal-titulo modal-titulo--ver">
+        <i class="fas fa-eye"></i> <span id="verTitulo">Detalle del Pedido</span>
+      </h2>
+      <button type="button" class="btn-cerrar btn-cerrar--ver" data-close="modalVer">&times;</button>
+    </div>
+
+    <!-- Info cliente -->
+    <div class="ver-grid" id="verInfoCliente"></div>
+
+    <!-- Tabla detalles -->
+    <div class="items-tabla-wrap">
+      <table class="items-tabla">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cant.</th>
+            <th>Precio unit.</th>
+            <th>Subtotal</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody id="verDetallesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Total -->
+    <div class="resumen-total">
+      <span>Total del pedido</span>
+      <span class="total-monto" id="verTotal">$0</span>
+    </div>
+
+    <div class="form-botones">
+      <button type="button" class="btn-cancelar" data-close="modalVer">Cerrar</button>
+      <button type="button" class="btn-guardar" onclick="imprimirComprobante()"
+        style="background:var(--color-ver);color:#fff;">
+        <i class="fas fa-print"></i> Imprimir Comprobante
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     MODAL — CREAR / EDITAR
+══════════════════════════════ -->
+<div class="modal" id="modalForm">
+  <div class="modal-contenido modal-contenido--xl" id="modalFormContenido">
+    <div class="modal-header" id="modalFormHeader">
+      <h2 class="modal-titulo" id="formModalTitulo">
+        <i class="fas fa-cart-plus"></i> Registrar Pedido
+      </h2>
+      <button type="button" class="btn-cerrar" id="btnCerrarForm" data-close="modalForm">&times;</button>
+    </div>
+
+    <div class="form-alerta" id="formAlerta"></div>
+
+    <!-- Datos del cliente -->
+    <div class="cliente-seccion">
+      <div class="cliente-seccion-titulo">
+        <i class="fas fa-user-circle"></i> Datos del Cliente
+      </div>
+      <div class="form-grupo">
+        <label>Seleccionar Cliente <span style="color:var(--color-error)">*</span></label>
+        <select id="clienteSelect" class="form-control form-input" required>
+          <option value="">— Seleccionar cliente —</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Sección Fecha de Entrega -->
+    <div class="cliente-seccion">
+      <div class="cliente-seccion-titulo">
+        <i class="fas fa-calendar-alt"></i> Fecha de Entrega <span style="color:var(--color-error)">*</span>
+      </div>
+      <div class="form-grupo">
+        <input type="date" id="fechaEntregaInput" class="form-input" required min="{{ today }}">
+        <small style="color: var(--color-texto-muted); font-size: 0.8rem;">
+          Selecciona una fecha futura para la entrega del pedido
+        </small>
+      </div>
+    </div>
+
+    <!-- Tabla de productos -->
+    <div class="items-tabla-wrap">
+      <table class="items-tabla">
+        <thead>
+          <tr>
+            <th>Producto <span style="color:var(--color-error)">*</span></th>
+            <th class="ped-table-w-custom">Personalizado</th>
+            <th class="ped-table-w-stock">Stock</th>
+            <th class="ped-table-w-price">Precio</th>
+            <th class="ped-table-w-qty">Cant.</th>
+            <th class="ped-table-w-notes">Notas / Especificaciones</th>
+            <th class="text-center ped-table-w-action">—</th>
+          </tr>
+        </thead>
+        <tbody id="formItemsBody"></tbody>
+      </table>
+      <button type="button" class="btn-agregar-fila" id="btnAgregarFila">
+        <i class="fas fa-plus-circle"></i> Agregar producto
+      </button>
+    </div>
+
+    <!-- Campo ABONO INICIAL -->
+    <div class="cliente-seccion" style="margin-bottom: 14px;">
+      <div class="cliente-seccion-titulo">
+        <i class="fas fa-money-bill-wave"></i> Abono Inicial
+      </div>
+      <div class="divicion abono-divicion">
+        <div class="form-grupo">
+          <label>Monto de abono <span style="color:var(--color-error)">*</span></label>
+          <div class="input-group" style="display: flex; align-items: center;">
+            <input type="number" id="abonoInput" class="form-input" step="0.01" min="0"
+              style="border-radius: 0 var(--borde-md) var(--borde-md) 0;" placeholder="$0.00">
+          </div>
+          <small id="abonoHelp"
+            style="color: var(--color-texto-muted); font-size: 0.7rem; display: block; margin-top: 5px;">
+            El abono debe ser al menos el 50% del total del pedido
+          </small>
+        </div>
+        <div class="form-grupo">
+          <label>Total del pedido</label>
+          <input type="text" id="formTotalDisplay" class="form-input" readonly
+            style="font-weight: bold; color: var(--color-exito);">
+        </div>
+      </div>
+    </div>
+
+    <span id="formTotal" style="display:none">$0.00</span>
+
+    <!-- Resumen total -->
+    <div class="resumen-total">
+      <span>Total del pedido</span>
+      <span class="total-monto" id="formTotalMonto">$0.00</span>
+    </div>
+
+    <div class="form-botones">
+      <button type="button" class="btn-cancelar" data-close="modalForm">Cancelar</button>
+      <button type="button" class="btn-guardar" id="btnGuardarPedido">
+        <i class="fas fa-save"></i> <span id="btnGuardarTexto">Guardar Pedido</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     MODAL — REGISTRAR PAGO
+══════════════════════════════ -->
+<div class="modal" id="modalPago">
+  <div class="modal-contenido">
+    <div class="modal-header modal-header--pago">
+      <h2 class="modal-titulo modal-titulo--pago">
+        <i class="fas fa-money-bill-wave"></i> Registrar Pago
+      </h2>
+      <button type="button" class="btn-cerrar" data-close="modalPago">&times;</button>
+    </div>
+
+    <div class="form-alerta" id="pagoAlerta"></div>
+
+    <div class="ver-grid" style="margin-bottom:16px">
+      <div class="ver-campo">
+        <span class="ver-label">Pedido</span>
+        <span class="ver-valor" id="pagoIdPedido">—</span>
+      </div>
+      <div class="ver-campo">
+        <span class="ver-label">Total del pedido</span>
+        <span class="ver-valor" id="pagoTotalPedido">$0</span>
+      </div>
+      <div class="ver-campo">
+        <span class="ver-label">Ya pagado</span>
+        <span class="ver-valor" style="color:var(--color-exito)" id="pagoPagado">$0</span>
+      </div>
+      <div class="ver-campo ver-campo--destacado deuda-item--alert"
+        style="border-radius:var(--borde-md);padding:11px 14px;display:flex;flex-direction:column;gap:4px;border:1px solid var(--color-deuda-brd)">
+        <span class="ver-label" style="color:var(--color-deuda)">Saldo Pendiente</span>
+        <span class="ver-valor ver-valor--monto" id="pagoPendiente">$0</span>
+      </div>
+    </div>
+
+    <div class="form-grupo">
+      <label>Monto a pagar <span style="color:var(--color-error)">*</span></label>
+      <input type="number" id="pagoMonto" class="form-input pago-focus" placeholder="0.00" min="0.01" step="0.01">
+    </div>
+
+    <div class="form-botones">
+      <button type="button" class="btn-cancelar" data-close="modalPago">Cancelar</button>
+      <button type="button" class="btn-guardar btn-guardar--pago" id="btnGuardarPago">
+        <i class="fas fa-check"></i> <span id="btnPagoTexto">Confirmar Pago</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMPROBANTE -->
+<div id="modalComprobante" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:10020;align-items:center;justify-content:center;">
+  <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);" onclick="cerrarModalComprobante()"></div>
+  <div style="position:relative;z-index:5;background:#0f1623;border:1px solid #1b2537;border-radius:16px;padding:30px;max-width:420px;width:100%;text-align:center;">
+    <div style="font-size:48px;color:#22c55e;margin-bottom:10px;">&#10003;</div>
+    <h2 style="color:#e9eef7;margin:0 0 6px;font-size:20px;" id="compMsg">Pedido creado con éxito</h2>
+    <p style="color:#a9b3c7;margin:0 0 20px;font-size:13px;">¿Qué deseas hacer con el comprobante?</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="descargarComprobante()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#1e3a5f;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+        <i class="fas fa-file-pdf" style="color:#ef4444;"></i> Descargar comprobante PDF
+      </button>
+      <button id="btnEnviarComprobante" onclick="enviarComprobante()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:#1b2537;color:#e9eef7;border:1px solid #334155;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;">
+        <i class="fas fa-envelope" style="color:#38bdf8;"></i> Enviar al correo del cliente
+      </button>
+      <button onclick="cerrarModalComprobante()" style="padding:10px;background:transparent;color:#6b7280;border:none;border-radius:8px;font-size:13px;cursor:pointer;">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.__dtReady = !!(window.jQuery && window.jQuery.fn && window.jQuery.fn.DataTable);
+</script>
+
+{{ productos_json|json_script:"productos-data" }}
+{{ clientes_json|json_script:"clientes-data" }}
+<div id="js-config" data-csrf="{{ csrf_token }}" data-url-crear="{% url 'crear_pedido' %}"
+  data-url-ver-base="{% url 'pedido_detalle' 0 %}" data-url-editar-base="{% url 'editar_pedido' 0 %}"
+  data-url-estado-base="{% url 'cambiar_estado' 0 %}" data-url-pago-base="{% url 'pedido_pago' 0 %}"
+  data-url-despacho="{% url 'despacho_list' %}" data-url-data="{% url 'pedido_data' %}"
+  style="display:none;"></div>
+
+<script src="{% static 'ap1/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'ap1/js/pedido.js' %}"></script>
+<script>
+let ultimoPedidoId = null;
+let ultimoClienteEmail = null;
+
+window.mostrarModalComprobante = function(pedidoId, clienteEmail) {
+  ultimoPedidoId = pedidoId;
+  ultimoClienteEmail = clienteEmail;
+  const btn = document.getElementById('btnEnviarComprobante');
+  if (btn) {
+    btn.style.display = clienteEmail ? 'flex' : 'none';
+  }
+  document.getElementById('modalComprobante').style.display = 'flex';
+};
+
+window.cerrarModalComprobante = function() {
+  document.getElementById('modalComprobante').style.display = 'none';
+};
+
+window.descargarComprobante = function() {
+  if (ultimoPedidoId) {
+    window.open('/vistas/pedido/comprobante/' + ultimoPedidoId + '/pdf/', '_blank');
+  }
+  cerrarModalComprobante();
+};
+
+window.enviarComprobante = function() {
+  if (!ultimoPedidoId) return;
+  const btn = document.getElementById('btnEnviarComprobante');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+  fetch('/vistas/pedido/comprobante/' + ultimoPedidoId + '/enviar/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCookie('csrftoken') }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      window.showToast(data.message, 'success');
+      cerrarModalComprobante();
+    } else {
+      window.showToast(data.error, 'error');
+    }
+  })
+  .catch(() => window.showToast('Error al enviar el correo', 'error'))
+  .finally(() => { btn.disabled = false; btn.innerHTML = orig; });
+};
+
+window.imprimirComprobante = function() {
+  if (window.__pedidoVerId) {
+    window.open('/vistas/pedido/comprobante/' + window.__pedidoVerId + '/html/', '_blank');
+  }
+};
+
+function getCookie(name) {
+  let v = null;
+  if (document.cookie) {
+    document.cookie.split(';').forEach(c => {
+      c = c.trim();
+      if (c.startsWith(name + '=')) v = decodeURIComponent(c.substring(name.length + 1));
+    });
+  }
+  return v;
+}
+</script>
+{% endblock %}
