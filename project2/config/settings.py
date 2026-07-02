@@ -80,18 +80,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # --------------------------------------------------------------------------
-# 6. BASE DE DATOS (MYSQL - BEDCOM)
+# 6. BASE DE DATOS 
 # --------------------------------------------------------------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bedcom',
-        'USER': 'root',
-        'PASSWORD': '123456789',
-        'HOST': 'db',
-        'PORT': '3306',
+import sys
+if 'test' in sys.argv or 'pytest' in sys.modules or os.getenv('GITHUB_ACTIONS') == 'true':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'bedcom',
+            'USER': 'root',
+            'PASSWORD': '123456789',
+            'HOST': 'db',
+            'PORT': '3306',
+        }
+    }
+
 
 # --------------------------------------------------------------------------
 # 7. AUTENTICACIÓN Y BLOQUEO
