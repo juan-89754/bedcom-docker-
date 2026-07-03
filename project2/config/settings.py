@@ -167,6 +167,11 @@ WEBPUSH_SETTINGS = {
 }
 CSRF_TRUSTED_ORIGINS = [
     'https://jaunt-ducky-vocation.ngrok-free.dev',
+    'https://jaunt-ducky-vocation.ngrok-free.dev',
+    'https://itzuki-x1ji.onrender.com',  # URL de Render
+    'https://itzuki.xyz',                # dominio
+    'https://www.itzuki.xyz',            # url con www
+
 ]
 # --------------------------------------------------------------------------
 # 11. CONFIGURACIÓN LUNA IA (EDGE TTS)
